@@ -87,6 +87,7 @@ class _MarqueeContainerState extends State<_MarqueeContainer>
   late Animation<double> _animation;
   late AnimationController _animationController;
   bool _showMarquee = false;
+  bool _finsihed = false;
 
   @override
   void initState() {
@@ -128,7 +129,10 @@ class _MarqueeContainerState extends State<_MarqueeContainer>
       ).animate(_animationController)
         ..addStatusListener((status) {
           if (status == AnimationStatus.completed) {
-            _animationController.repeat();
+            // _animationController.repeat();
+            setState(() {
+              _finsihed = true;
+            });
           }
         });
       _animationController.forward();
@@ -142,6 +146,14 @@ class _MarqueeContainerState extends State<_MarqueeContainer>
       textDirection: widget.textDirection,
       textAlign: widget.textAlign,
     );
+    if (_finsihed) {
+      return Text(
+        widget.text.toPlainText(),
+        style: widget.textStyle,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      );
+    }
     return _showMarquee
         ? AnimatedBuilder(
             builder: (context, myWidget) => Container(
